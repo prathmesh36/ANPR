@@ -1,0 +1,27 @@
+function CharacterRecognitionAndSpeech()
+
+text2speech( '' )%Enter here text which will be converted to speech
+
+function initSpeech
+loadlibrary('wgText2Speech','Speak.h'); %initialization of the library
+
+function text2speech( text )
+if nargin<1
+    text = 'Please call this function with text';
+end
+try
+    if ~isa(text,'cell')
+        text = {text};
+    end
+    for k=1:length(text)
+        calllib('wgText2Speech','Speak',text{k}); %call library
+    end
+catch
+    loadlibrary('wgText2Speech','Speak.h');
+    text2speech( text );
+end
+
+%%
+function unloadSpeechLibrary
+% unloads the speech library
+unloadlibrary('wgText2Speech');

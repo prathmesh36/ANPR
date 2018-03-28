@@ -1,0 +1,54 @@
+clc, close all, clear all
+imagen = imread('scanner.bmp');
+imagen=medfilt2(imagen);
+[f c]=size(imagen); %size of image
+imagen (1,1)=255;   %making all corners of image white
+imagen (f,1)=255;
+imagen (1,c)=255;
+imagen (f,c)=255;
+re=imagen;
+imshow(re);
+aa=clip(re);
+r=size(aa,1);
+for s=1:r   %execute the for routine from 1 to no. of rows
+    if sum(aa(s,:))==0  %checking for empty row
+        nm=aa(1:s-1,1:end);%First line matrix
+        rm=aa(s:end,1:end);%Remain line matrix
+        fl=~clip(~nm);
+        re=~clip(~rm);
+        %*-*-*Uncomment lines below to see the result*-*-*-*-
+                 subplot(2,1,1);imshow(fl);
+                 subplot(2,1,2);imshow(re);
+        break
+    else
+        fl=~aa;%Only one line.(invert image)
+        re=[];  %empty the variable re
+    end
+end
+imgn=~fl;
+imshow(imgn);
+L = bwlabel(imgn);  %label the connected pixels
+    mx=max(max(L)) %returns no. of characters in a line
+    BW = edge(double(imgn),'sobel');   %displaying only edge of characters
+    imview(BW);
+    [imx,imy]=size(BW) % returns size of edge character figure(x,y)
+    for n=1:mx  %from 1 to no. of characters in one line
+        [r,c] = find(L==n) %returns co-ordinates of edge characters 
+        rc = [r c] %combine rc in one entity
+        [sx sy]=size(rc)   %store size i.e rows and columns
+        n1=zeros(imx,imy)  %make black image of first line
+        for i=1:sx  from 1 to no. of connected pixels of charac
+            x1=rc(i,1) %drawing letters
+            y1=rc(i,2)
+            n1(x1,y1)=255%
+        end
+        %*-*-*-*-*-END Calculating connected components*-*-*-*-*
+        n1=~n1; %invert image
+        n1=~clip(n1);   %crop image to character size
+        img_r=same_dim(n1);%Transf. to size 42 X 24
+        %*-*Uncomment line below to see letters one by one*-*-*-*
+        %        imshow(img_r);pause(1)
+        %*-*-*-*-*-*-*-*
+        letter=read_letter(img_r);%img to text
+        word=[word letter];
+    end

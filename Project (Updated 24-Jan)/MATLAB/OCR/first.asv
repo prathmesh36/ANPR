@@ -1,0 +1,20 @@
+clc, close all, clear all
+imagen=imread('scanner.bmp');
+imview(imagen);title('Input with noise')
+
+%Filter with noise%
+if length(size(imagen))==3;
+    imagen=rgb2gray(imagen);
+end
+imagen= medfilt2(imagen);
+imview(imagen);
+[f c]=size(imagen);
+imagen (1,1)=255;
+imagen (f,1)=255;
+imagen (1,c)=255;
+imagen (f,c)=255;
+%END Filter Image Noise*
+%imview(imagen)
+aa=clip(imagen);
+imview(aa);
+r=size(aa,1)
